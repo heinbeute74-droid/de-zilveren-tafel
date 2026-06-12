@@ -1,0 +1,833 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <!--
+    Restaurant De Zilveren Tafel - bewerken
+
+    1. Datumopties aanpassen:
+       Zoek op "EDITABLE DATE OPTIONS" en wijzig de tekst in de datumkaarten.
+
+    2. Google Form aanpassen:
+       Zoek op "EDITABLE GOOGLE FORM URL" in de script-tag onderaan.
+       Vervang de placeholder door de echte Google Form-link.
+
+    3. Countdown/reveal aanpassen:
+       Zoek op "EDITABLE COUNTDOWN SETTINGS" in de script-tag onderaan.
+       Pas nextRevealTitle en nextRevealDate aan.
+       Gebruik voor nextRevealDate bij voorkeur dit formaat:
+       "2026-07-01T20:00:00+02:00"
+
+    Alles staat in dit ene bestand: HTML, CSS en JavaScript.
+  -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Restaurant De Zilveren Tafel, een geheime private dining ervaring ter ere van 25 jaar liefde.">
+  <title>Restaurant De Zilveren Tafel</title>
+  <style>
+    :root {
+      --ink: #f8efd9;
+      --ink-muted: #cfc3a8;
+      --gold: #d7b56d;
+      --gold-soft: rgba(215, 181, 109, 0.18);
+      --green: #0b1914;
+      --green-2: #10251e;
+      --green-3: #17362c;
+      --line: rgba(248, 239, 217, 0.15);
+      --shadow: rgba(0, 0, 0, 0.38);
+      --max: 1120px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 20% 8%, rgba(215, 181, 109, 0.18), transparent 32rem),
+        radial-gradient(circle at 80% 18%, rgba(94, 47, 27, 0.2), transparent 28rem),
+        linear-gradient(180deg, #07110e 0%, var(--green) 45%, #08120f 100%);
+      font-family: Georgia, "Times New Roman", serif;
+      line-height: 1.6;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(248, 239, 217, 0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(248, 239, 217, 0.018) 1px, transparent 1px);
+      background-size: 64px 64px;
+      mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), transparent 85%);
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .page {
+      overflow: hidden;
+    }
+
+    .section {
+      position: relative;
+      padding: 4.5rem 1.25rem;
+    }
+
+    .wrap {
+      width: min(100%, var(--max));
+      margin: 0 auto;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.65rem;
+      margin: 0 0 1rem;
+      color: var(--gold);
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before,
+    .eyebrow::after {
+      content: "";
+      width: 1.7rem;
+      height: 1px;
+      background: var(--gold);
+      opacity: 0.7;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      max-width: 12ch;
+      margin-bottom: 1rem;
+      font-size: clamp(2.9rem, 13.5vw, 8.75rem);
+      line-height: 0.88;
+      letter-spacing: 0;
+      text-wrap: balance;
+    }
+
+    h2 {
+      margin-bottom: 1rem;
+      color: var(--ink);
+      font-size: clamp(2rem, 8vw, 4.4rem);
+      line-height: 0.98;
+      letter-spacing: 0;
+      text-wrap: balance;
+    }
+
+    h3 {
+      margin-bottom: 0.55rem;
+      color: var(--gold);
+      font-size: 1.15rem;
+      line-height: 1.25;
+    }
+
+    .lead {
+      max-width: 66ch;
+      color: var(--ink-muted);
+      font-size: clamp(1.05rem, 2.4vw, 1.28rem);
+    }
+
+    .hero {
+      min-height: 100svh;
+      display: grid;
+      align-items: center;
+      padding-top: 2rem;
+      padding-bottom: 4rem;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, rgba(7, 17, 14, 0.96) 0%, rgba(7, 17, 14, 0.8) 48%, rgba(7, 17, 14, 0.52) 100%),
+        radial-gradient(circle at 78% 48%, rgba(241, 190, 98, 0.28), transparent 18rem),
+        radial-gradient(circle at 88% 58%, rgba(255, 236, 184, 0.16), transparent 9rem);
+      z-index: -2;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      right: min(7vw, 5rem);
+      bottom: 8vh;
+      width: min(42vw, 24rem);
+      aspect-ratio: 1;
+      border: 1px solid rgba(215, 181, 109, 0.34);
+      border-radius: 50%;
+      background:
+        radial-gradient(circle, rgba(255, 224, 147, 0.28) 0 1.8%, transparent 2.4%),
+        radial-gradient(circle at center, transparent 0 43%, rgba(215, 181, 109, 0.12) 44% 44.8%, transparent 45.5%),
+        repeating-conic-gradient(from 18deg, rgba(215, 181, 109, 0.16) 0 1deg, transparent 1deg 13deg);
+      opacity: 0.7;
+      z-index: -1;
+    }
+
+    .hero-copy {
+      max-width: 760px;
+    }
+
+    .subtitle {
+      margin-bottom: 1.4rem;
+      color: var(--gold);
+      font-size: clamp(1.25rem, 4.8vw, 2.15rem);
+      line-height: 1.15;
+      text-wrap: balance;
+    }
+
+    .hero-actions,
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      margin-top: 2rem;
+    }
+
+    .button {
+      display: inline-flex;
+      min-height: 3rem;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--gold);
+      border-radius: 999px;
+      padding: 0.78rem 1.15rem;
+      color: #08120f;
+      background: var(--gold);
+      box-shadow: 0 1rem 2rem var(--shadow);
+      font-family: Arial, sans-serif;
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: transform 180ms ease, background 180ms ease, color 180ms ease;
+    }
+
+    .button:hover,
+    .button:focus-visible {
+      transform: translateY(-2px);
+      background: #efd48e;
+    }
+
+    .button.secondary {
+      color: var(--ink);
+      background: rgba(248, 239, 217, 0.04);
+      box-shadow: none;
+    }
+
+    .button.secondary:hover,
+    .button.secondary:focus-visible {
+      color: #08120f;
+      background: var(--gold);
+    }
+
+    .notice {
+      max-width: 780px;
+      margin-top: 2rem;
+      border-left: 1px solid var(--gold);
+      padding: 0.9rem 0 0.9rem 1rem;
+      color: var(--ink-muted);
+      font-style: italic;
+    }
+
+    .split {
+      display: grid;
+      gap: 2rem;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: linear-gradient(145deg, rgba(248, 239, 217, 0.07), rgba(248, 239, 217, 0.025));
+      box-shadow: 0 1.4rem 3rem var(--shadow);
+      backdrop-filter: blur(12px);
+    }
+
+    .reservation-panel {
+      padding: clamp(1rem, 4vw, 2rem);
+    }
+
+    .date-grid {
+      display: grid;
+      gap: 0.9rem;
+      margin-top: 1.4rem;
+    }
+
+    .date-card {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 0.85rem;
+      align-items: center;
+      width: 100%;
+      border: 1px solid rgba(215, 181, 109, 0.36);
+      border-radius: 8px;
+      padding: 1rem;
+      color: var(--ink);
+      background: rgba(9, 23, 18, 0.74);
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+      transition: border-color 180ms ease, transform 180ms ease, background 180ms ease;
+    }
+
+    .date-card:hover,
+    .date-card:focus-visible {
+      transform: translateY(-2px);
+      border-color: var(--gold);
+      background: rgba(19, 49, 39, 0.8);
+      outline: none;
+    }
+
+    .date-card strong {
+      display: block;
+      color: var(--gold);
+      font-size: 1.06rem;
+    }
+
+    .date-card span {
+      display: block;
+      color: var(--ink-muted);
+      font-size: 0.95rem;
+    }
+
+    .date-mark {
+      display: grid;
+      width: 3.25rem;
+      height: 3.25rem;
+      place-items: center;
+      border: 1px solid var(--gold-soft);
+      border-radius: 50%;
+      color: var(--gold);
+      background: rgba(215, 181, 109, 0.08);
+      font-family: Arial, sans-serif;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .countdown-card {
+      display: grid;
+      gap: 1rem;
+      padding: clamp(1.2rem, 5vw, 2.2rem);
+    }
+
+    .countdown-title {
+      color: var(--gold);
+      font-size: 1.1rem;
+    }
+
+    .timer {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.7rem;
+    }
+
+    .time-box {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 0.85rem 0.7rem;
+      background: rgba(0, 0, 0, 0.16);
+      text-align: center;
+    }
+
+    .time-box b {
+      display: block;
+      color: var(--ink);
+      font-family: Arial, sans-serif;
+      font-size: clamp(1.8rem, 9vw, 3.1rem);
+      line-height: 1;
+    }
+
+    .time-box span {
+      color: var(--ink-muted);
+      font-family: Arial, sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .expired {
+      display: none;
+      border: 1px solid rgba(215, 181, 109, 0.5);
+      border-radius: 8px;
+      padding: 1rem;
+      color: var(--gold);
+      background: rgba(215, 181, 109, 0.08);
+      font-size: 1.2rem;
+    }
+
+    .timeline {
+      display: grid;
+      gap: 0;
+      margin: 2rem 0 0;
+      padding: 0;
+      list-style: none;
+      counter-reset: reveal;
+    }
+
+    .timeline li {
+      position: relative;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 1rem;
+      padding: 0 0 1.4rem;
+      color: var(--ink-muted);
+      counter-increment: reveal;
+    }
+
+    .timeline li:not(:last-child)::after {
+      content: "";
+      position: absolute;
+      left: 1.05rem;
+      top: 2.45rem;
+      bottom: 0.25rem;
+      width: 1px;
+      background: rgba(215, 181, 109, 0.28);
+    }
+
+    .timeline li::before {
+      content: counter(reveal, decimal-leading-zero);
+      z-index: 1;
+      display: grid;
+      width: 2.1rem;
+      height: 2.1rem;
+      place-items: center;
+      border: 1px solid var(--gold);
+      border-radius: 50%;
+      color: var(--gold);
+      background: #0b1914;
+      font-family: Arial, sans-serif;
+      font-size: 0.68rem;
+      font-weight: 700;
+    }
+
+    .timeline strong {
+      display: block;
+      color: var(--ink);
+      font-size: 1.05rem;
+    }
+
+    .announcement {
+      border-block: 1px solid var(--line);
+      background:
+        linear-gradient(90deg, rgba(215, 181, 109, 0.1), transparent 28%, transparent 72%, rgba(215, 181, 109, 0.08)),
+        rgba(248, 239, 217, 0.025);
+    }
+
+    .announcement .wrap {
+      max-width: 900px;
+      text-align: center;
+    }
+
+    .menu-grid,
+    .info-grid {
+      display: grid;
+      gap: 0.9rem;
+      margin-top: 2rem;
+    }
+
+    .menu-item,
+    .info-item {
+      border-top: 1px solid var(--line);
+      padding-top: 1rem;
+    }
+
+    .menu-item {
+      display: grid;
+      gap: 0.35rem;
+    }
+
+    .course {
+      color: var(--gold);
+      font-family: Arial, sans-serif;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .dish {
+      color: var(--ink);
+      font-size: 1.25rem;
+      line-height: 1.25;
+    }
+
+    .info-item dt {
+      margin-bottom: 0.25rem;
+      color: var(--gold);
+      font-family: Arial, sans-serif;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .info-item dd {
+      margin: 0;
+      color: var(--ink-muted);
+    }
+
+    .brigade {
+      position: relative;
+    }
+
+    .brigade-card {
+      padding: clamp(1.2rem, 5vw, 2.2rem);
+    }
+
+    .brigade-card p {
+      margin-bottom: 0;
+      color: var(--ink-muted);
+      font-size: 1.12rem;
+    }
+
+    .seal {
+      display: inline-grid;
+      width: 6.8rem;
+      height: 6.8rem;
+      place-items: center;
+      margin-bottom: 1.2rem;
+      border: 1px solid var(--gold);
+      border-radius: 50%;
+      color: var(--gold);
+      background: rgba(215, 181, 109, 0.07);
+      font-family: Arial, sans-serif;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      line-height: 1.25;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    footer {
+      padding: 2.2rem 1.25rem 3rem;
+      color: var(--ink-muted);
+      text-align: center;
+    }
+
+    footer p {
+      margin-bottom: 0.35rem;
+    }
+
+    @media (min-width: 680px) {
+      .section {
+        padding: 6rem 2rem;
+      }
+
+      .hero {
+        padding-top: 3rem;
+      }
+
+      .split {
+        grid-template-columns: minmax(0, 1fr) minmax(320px, 0.72fr);
+        align-items: start;
+      }
+
+      .date-grid,
+      .menu-grid,
+      .info-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .timer {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+    }
+
+    @media (min-width: 960px) {
+      .menu-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .info-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="section hero" aria-labelledby="hero-title">
+      <div class="wrap hero-copy">
+        <p class="eyebrow">Private dining</p>
+        <h1 id="hero-title">Restaurant De Zilveren Tafel</h1>
+        <p class="subtitle">Exclusief geopend ter ere van 25 jaar liefde</p>
+        <p class="lead">
+          Dit restaurant bestaat voor &eacute;&eacute;n avond. Er zijn slechts twee eregasten,
+          zij kiezen de datum, en de rest wordt stap voor stap onthuld. De rest blijft
+          nog even onder de stolp.
+        </p>
+        <div class="hero-actions">
+          <a class="button" href="#reserveren">Reserveer de avond</a>
+          <a class="button secondary" href="#onthullingen">Bekijk het geheime programma</a>
+        </div>
+        <p class="notice">Het management is niet aansprakelijk voor flauwe woordspelingen.</p>
+      </div>
+    </section>
+
+    <section class="section" id="reserveren" aria-labelledby="reservation-title">
+      <div class="wrap split">
+        <div>
+          <p class="eyebrow">Reservering</p>
+          <h2 id="reservation-title">Een tafel voor twee, met zorgvuldig verzwegen details.</h2>
+          <p class="lead">
+            Kies een datum waarop Restaurant De Zilveren Tafel haar deuren mag openen.
+            Na bevestiging start het offici&euml;le onthullingsmenu, in kleine gangen
+            geserveerd via de WhatsApp-groep.
+          </p>
+          <div class="button-row">
+            <a class="button" id="formLink" href="https://forms.gle/placeholder" target="_blank" rel="noopener">
+              Geef voorkeur door
+            </a>
+          </div>
+        </div>
+
+        <div class="panel reservation-panel" aria-label="Datumopties">
+          <h3>Beschikbare avonden</h3>
+          <p>Een discrete selectie. De chef fluistert: kies wijs.</p>
+          <div class="date-grid">
+            <!-- EDITABLE DATE OPTIONS: pas deze datumkaarten gerust aan. -->
+            <button class="date-card" type="button">
+              <span class="date-mark">Optie 1</span>
+              <span><strong>Zaterdag 5 september 2026</strong><span>Ontvangst rond 18:30</span></span>
+            </button>
+            <button class="date-card" type="button">
+              <span class="date-mark">Optie 2</span>
+              <span><strong>Zaterdag 12 september 2026</strong><span>Ontvangst rond 18:30</span></span>
+            </button>
+            <button class="date-card" type="button">
+              <span class="date-mark">Optie 3</span>
+              <span><strong>Vrijdag 18 september 2026</strong><span>Ontvangst rond 19:00</span></span>
+            </button>
+            <button class="date-card" type="button">
+              <span class="date-mark">Optie 4</span>
+              <span><strong>Zaterdag 26 september 2026</strong><span>Ontvangst rond 18:30</span></span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section announcement" aria-labelledby="countdown-title">
+      <div class="wrap">
+        <p class="eyebrow">Volgende gang</p>
+        <h2 id="countdown-title">Countdown tot de volgende onthulling</h2>
+        <div class="panel countdown-card">
+          <p class="countdown-title" id="revealTitle">De volgende onthulling wordt voorbereid.</p>
+          <div class="timer" id="timer" aria-live="polite">
+            <div class="time-box"><b id="days">00</b><span>Dagen</span></div>
+            <div class="time-box"><b id="hours">00</b><span>Uren</span></div>
+            <div class="time-box"><b id="minutes">00</b><span>Minuten</span></div>
+            <div class="time-box"><b id="seconds">00</b><span>Seconden</span></div>
+          </div>
+          <p class="expired" id="expiredMessage">De onthulling is geserveerd. Kijk in de WhatsApp-groep.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="onthullingen" aria-labelledby="calendar-title">
+      <div class="wrap split">
+        <div>
+          <p class="eyebrow">Reveal calendar</p>
+          <h2 id="calendar-title">Het menu van geheimen</h2>
+          <p class="lead">
+            Geen avondvullende verrassing zonder mise-en-place. Elke stap wordt op
+            het juiste moment opgediend, met passende geheimhouding en een snufje
+            ceremonieel gedoe.
+          </p>
+        </div>
+        <ol class="timeline">
+          <li><strong>Reservering bevestigd</strong>De tafel wordt officieel voor twee gedekt.</li>
+          <li><strong>Locatie bekendmaking</strong>De route naar het tijdelijke restaurant verschijnt.</li>
+          <li><strong>Bekendmaking keukenbrigade</strong>De verdachten met schorten treden naar voren.</li>
+          <li><strong>Eerste menu-hint</strong>Een tipje van het servet wordt opgelicht.</li>
+          <li><strong>Amuse</strong>Een klein voorproefje van wat komen gaat.</li>
+          <li><strong>Voorgerecht</strong>De avond begint vorm te krijgen.</li>
+          <li><strong>Hoofdgerecht</strong>Het hart van het geheime diner.</li>
+          <li><strong>Dessert</strong>Zoet bewijs dat 25 jaar gevierd moet worden.</li>
+          <li><strong>Praktische info</strong>Alles wat nodig is, behalve afwaskennis.</li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section announcement" aria-labelledby="whatsapp-title">
+      <div class="wrap">
+        <p class="eyebrow">Offici&euml;le berichten</p>
+        <h2 id="whatsapp-title">Updates via WhatsApp</h2>
+        <p class="lead">
+          Offici&euml;le restaurantmededelingen, chef-introducties, menu-hints en slechte
+          grappen verschijnen in de WhatsApp-groep. Beschouw die groep als het
+          mededelingenbord van een restaurant dat officieel niet bestaat.
+        </p>
+      </div>
+    </section>
+
+    <section class="section brigade" aria-labelledby="brigade-title">
+      <div class="wrap split">
+        <div>
+          <p class="eyebrow">Keukenbrigade</p>
+          <h2 id="brigade-title">Geselecteerd op smaak en stilte.</h2>
+        </div>
+        <div class="panel brigade-card">
+          <span class="seal">Binnenkort bekend</span>
+          <p>
+            Onze keukenbrigade wordt binnenkort bekendgemaakt. Zij zijn geselecteerd
+            op smaak, geheimhouding en het vermogen om professioneel te knikken
+            wanneer iemand vraagt wat het hoofdgerecht wordt.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="menu-title">
+      <div class="wrap">
+        <p class="eyebrow">Voorlopig menu</p>
+        <h2 id="menu-title">Een eerste blik op de kaart</h2>
+        <div class="menu-grid">
+          <article class="menu-item">
+            <span class="course">Amuse</span>
+            <span class="dish">Een klein hapje spanning</span>
+          </article>
+          <article class="menu-item">
+            <span class="course">Voorgerecht</span>
+            <span class="dish">Een frisse start na 25 jaar</span>
+          </article>
+          <article class="menu-item">
+            <span class="course">Tussengerecht</span>
+            <span class="dish">Soep van geheimzinnigheid</span>
+          </article>
+          <article class="menu-item">
+            <span class="course">Hoofdgerecht</span>
+            <span class="dish">Langzaam gegaarde liefde</span>
+          </article>
+          <article class="menu-item">
+            <span class="course">Dessert</span>
+            <span class="dish">Zoet slotakkoord</span>
+          </article>
+          <article class="menu-item">
+            <span class="course">Koffie</span>
+            <span class="dish">Espresso yourself</span>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="info-title">
+      <div class="wrap">
+        <p class="eyebrow">Praktische info</p>
+        <h2 id="info-title">Wat al op de kaart mag staan</h2>
+        <dl class="info-grid">
+          <div class="info-item">
+            <dt>Aantal couverts</dt>
+            <dd>2 eregasten, 4 gastheren/gastvrouwen en een geheime keukenbrigade</dd>
+          </div>
+          <div class="info-item">
+            <dt>Dresscode</dt>
+            <dd>Feestelijk genoeg voor foto&rsquo;s, comfortabel genoeg voor natafelen</dd>
+          </div>
+          <div class="info-item">
+            <dt>Meenemen</dt>
+            <dd>Niets behalve trek, goede zin en eventueel een verhaal uit de afgelopen 25 jaar</dd>
+          </div>
+          <div class="info-item">
+            <dt>Afwassen</dt>
+            <dd>Verboden voor eregasten</dd>
+          </div>
+        </dl>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Restaurant De Zilveren Tafel</p>
+    <p>Eenmalig geopend. Met liefde voorbereid. Discretie aanbevolen.</p>
+  </footer>
+
+  <script>
+    /*
+      EDITABLE GOOGLE FORM URL
+      Vervang deze placeholder door de echte link naar jullie Google Form.
+    */
+    const googleFormUrl = "https://forms.gle/placeholder";
+
+    /*
+      EDITABLE COUNTDOWN SETTINGS
+      Pas de titel en datum aan voor de eerstvolgende onthulling.
+      Voorbeeld datumformaat: "2026-07-01T20:00:00+02:00"
+    */
+    const nextRevealTitle = "Volgende onthulling: locatie bekendmaking";
+    const nextRevealDate = "2026-07-01T20:00:00+02:00";
+
+    const formLink = document.getElementById("formLink");
+    const revealTitle = document.getElementById("revealTitle");
+    const timer = document.getElementById("timer");
+    const expiredMessage = document.getElementById("expiredMessage");
+    const daysEl = document.getElementById("days");
+    const hoursEl = document.getElementById("hours");
+    const minutesEl = document.getElementById("minutes");
+    const secondsEl = document.getElementById("seconds");
+
+    formLink.href = googleFormUrl;
+    revealTitle.textContent = nextRevealTitle;
+
+    function pad(value) {
+      return String(value).padStart(2, "0");
+    }
+
+    function updateCountdown() {
+      const revealTime = new Date(nextRevealDate).getTime();
+      const now = Date.now();
+      const distance = revealTime - now;
+
+      if (Number.isNaN(revealTime) || distance <= 0) {
+        timer.style.display = "none";
+        expiredMessage.style.display = "block";
+        return;
+      }
+
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((distance / (1000 * 60)) % 60);
+      const seconds = Math.floor((distance / 1000) % 60);
+
+      daysEl.textContent = pad(days);
+      hoursEl.textContent = pad(hours);
+      minutesEl.textContent = pad(minutes);
+      secondsEl.textContent = pad(seconds);
+    }
+
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+  </script>
+</body>
+</html>
